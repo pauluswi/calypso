@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id        String   @id @default(uuid())
+  username  String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wallet Wallet?
+}
+
+model Wallet {
+  id        String   @id @default(uuid())
+  playerId  String   @unique
+  address   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  player Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
+
+model Asset {
+  id          String   @id @default(uuid())
+  name        String
+  description String
+  assetType   String
+  metadataUri String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  blockchainTransactions BlockchainTransaction[]
+}
+
+model BlockchainTransaction {
+  id            String               @id @default(uuid())
+  assetId        String
+  walletAddress  String
+  operation      String
+  txHash         String?              @unique
+  status         String
+  tokenId        BigInt?
+  createdAt      DateTime             @default(now())
+  confirmedAt    DateTime?
+
+  asset Asset @relation(fields: [assetId], references: [id], onDelete: Cascade)
+}
