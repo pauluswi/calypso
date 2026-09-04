@@ -1,3 +1,4 @@
 node_modules
 dist
 .env
+AI_AGENT.md

@@ -1,20 +1,18 @@
 # Calypso
 
-Phase 2.1 foundation for a modular monolith Web3 game asset backend.
+Phase 3 Web3 game asset backend with player wallet association.
 
-## Included in Phase 2
+## Included Features
 
 - Node.js + TypeScript project setup
 - Fastify server with `GET /health`
 - OpenAPI docs via Swagger at `/docs`
-- Linting with ESLint
-- Formatting with Prettier
-- Basic API test with Vitest
-- Environment template via `.env.example`
-- PostgreSQL data model with Prisma
+- Linting with ESLint & formatting with Prettier
+- Vitest unit and integration test suite
+- SQLite / PostgreSQL data model with Prisma
 - Player CRUD APIs
 - Asset CRUD APIs
-- Initial Prisma migration files
+- Wallet association APIs with EVM address validation via ethers.js
 
 ## Commands
 
@@ -34,10 +32,14 @@ npm run prisma:migrate
 Copy `.env.example` values into your local environment as needed.
 If `DATABASE_URL` is not set, the app defaults to `file:./prisma/dev.db`.
 
-## Local PostgreSQL
+## Local Database (SQLite)
+
+No container is required. Prisma will create `prisma/dev.db` automatically when migrations run.
+
+Run:
 
 ```bash
-docker compose up -d
+npm run prisma:migrate
 ```
 
 ## Player APIs
@@ -47,6 +49,11 @@ docker compose up -d
 - `GET /players/:id`
 - `PUT /players/:id`
 - `DELETE /players/:id`
+
+## Wallet APIs
+
+- `POST /players/:id/wallet`
+- `GET /players/:id/wallet`
 
 ## Asset APIs
 
