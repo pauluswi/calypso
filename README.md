@@ -1,6 +1,6 @@
 # Calypso
 
-Phase 3 Web3 game asset backend with player wallet association.
+Phase 4 Web3 game asset backend with ERC-721 Smart Contract setup.
 
 ## Included Features
 
@@ -13,6 +13,8 @@ Phase 3 Web3 game asset backend with player wallet association.
 - Player CRUD APIs
 - Asset CRUD APIs
 - Wallet association APIs with EVM address validation via ethers.js
+- OpenZeppelin ERC-721 Smart Contract (`GameAsset.sol`) with minting, transfer, and event capabilities
+- Hardhat environment setup for compilation, testing, and local deployment
 
 ## Commands
 
@@ -25,6 +27,9 @@ npm run lint
 npm run format:check
 npm run prisma:generate
 npm run prisma:migrate
+npm run compile
+npm run test:contracts
+npm run deploy:local
 ```
 
 ## Environment
