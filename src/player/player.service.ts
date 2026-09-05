@@ -1,5 +1,8 @@
 import { Prisma } from "@prisma/client";
+import { AssetRepository } from "../asset/asset.repository";
 import { AppError } from "../shared/errors";
+import { TransactionRepository } from "../transaction/transaction.repository";
+import { WalletRepository } from "../wallet/wallet.repository";
 import { PlayerRepository } from "./player.repository";
 
 type CreatePlayerInput = {
@@ -11,7 +14,12 @@ type UpdatePlayerInput = {
 };
 
 export class PlayerService {
-  constructor(private readonly repository: PlayerRepository = new PlayerRepository()) {}
+  constructor(
+    private readonly repository: PlayerRepository = new PlayerRepository(),
+    private readonly walletRepository: WalletRepository = new WalletRepository(),
+    private readonly transactionRepository: TransactionRepository = new TransactionRepository(),
+    private readonly assetRepository: AssetRepository = new AssetRepository()
+  ) {}
 
   async createPlayer(input: CreatePlayerInput) {
     try {
@@ -75,5 +83,40 @@ export class PlayerService {
     if (!deleted) {
       throw new AppError("PLAYER_NOT_FOUND", "Player was not found", 404);
     }
+  }
+
+  async getPlayerAssets(playerId: string) {
+    const player = await this.getPlayerById(playerId);
+    const wallet = await this.walletRepository.findByPlayerId(player.id);
+    if (!wallet) {
+      return [];
+    }
+
+    const confirmedTxs = await this.transactionRepository.findConfirmedByWalletAddress(
+      wallet.address
+    );
+
+    const playerAssets = [];
+    for (const tx of confirmedTxs) {
+      const asset = await this.assetRepository.findById(tx.assetId);
+      if (asset) {
+        playerAssets.push({
+          id: asset.id,
+          name: asset.name,
+          description: asset.description,
+          assetType: asset.assetType,
+          metadataUri: asset.metadataUri,
+          createdAt: asset.createdAt,
+          updatedAt: asset.updatedAt,
+          nft: {
+            tokenId: tx.tokenId !== null ? Number(tx.tokenId) : null,
+            txHash: tx.txHash,
+            status: tx.status,
+          },
+        });
+      }
+    }
+
+    return playerAssets;
   }
 }

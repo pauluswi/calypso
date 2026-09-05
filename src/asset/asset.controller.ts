@@ -134,4 +134,18 @@ export async function registerAssetRoutes(app: FastifyInstance): Promise<void> {
       return reply.code(200).send(result);
     }
   );
+
+  app.get(
+    "/assets/:id/owner",
+    {
+      schema: {
+        tags: ["asset"],
+        params: assetIdParamsSchema,
+      },
+    },
+    async (request) => {
+      const params = request.params as { id: string };
+      return assetService.getAssetOwner(params.id);
+    }
+  );
 }

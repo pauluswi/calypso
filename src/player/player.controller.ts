@@ -91,4 +91,18 @@ export async function registerPlayerRoutes(app: FastifyInstance): Promise<void> 
       return reply.code(204).send();
     }
   );
+
+  app.get(
+    "/players/:id/assets",
+    {
+      schema: {
+        tags: ["player"],
+        params: playerIdParamsSchema,
+      },
+    },
+    async (request) => {
+      const params = request.params as { id: string };
+      return playerService.getPlayerAssets(params.id);
+    }
+  );
 }

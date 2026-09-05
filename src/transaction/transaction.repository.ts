@@ -46,4 +46,26 @@ export class TransactionRepository {
       where: { id },
     });
   }
+
+  async findConfirmedByAssetId(assetId: string): Promise<BlockchainTransaction | null> {
+    return getPrismaClient().blockchainTransaction.findFirst({
+      where: {
+        assetId,
+        status: "CONFIRMED",
+        tokenId: { not: null },
+      },
+      orderBy: { confirmedAt: "desc" },
+    });
+  }
+
+  async findConfirmedByWalletAddress(walletAddress: string): Promise<BlockchainTransaction[]> {
+    return getPrismaClient().blockchainTransaction.findMany({
+      where: {
+        walletAddress,
+        status: "CONFIRMED",
+        tokenId: { not: null },
+      },
+      orderBy: { confirmedAt: "desc" },
+    });
+  }
 }

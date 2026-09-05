@@ -8,4 +8,8 @@ export class NFTService {
   async mint(toAddress: string): Promise<MintResult> {
     return this.blockchainService.mintNFT(toAddress);
   }
+
+  async getOwnerOf(tokenId: number): Promise<string> {
+    return this.blockchainService.getOwnerOfToken(tokenId);
+  }
 }

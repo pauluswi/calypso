@@ -1,6 +1,7 @@
 import { getAddress, isAddress } from "ethers";
 import { NFTService } from "../blockchain/nft.service";
 import { AppError } from "../shared/errors";
+import { TransactionRepository } from "../transaction/transaction.repository";
 import { TransactionService } from "../transaction/transaction.service";
 import { WalletRepository } from "../wallet/wallet.repository";
 import { AssetRepository } from "./asset.repository";
@@ -31,7 +32,8 @@ export class AssetService {
     private readonly repository: AssetRepository = new AssetRepository(),
     private readonly walletRepository: WalletRepository = new WalletRepository(),
     private readonly transactionService: TransactionService = new TransactionService(),
-    private readonly nftService: NFTService = new NFTService()
+    private readonly nftService: NFTService = new NFTService(),
+    private readonly transactionRepository: TransactionRepository = new TransactionRepository()
   ) {}
 
   async createAsset(input: CreateAssetInput) {
@@ -134,5 +136,29 @@ export class AssetService {
       await this.transactionService.markFailed(pendingTx.id);
       throw error;
     }
+  }
+
+  async getAssetOwner(assetId: string) {
+    const asset = await this.getAssetById(assetId);
+    const confirmedTx =
+      await this.transactionRepository.findConfirmedByAssetId(asset.id);
+
+    if (!confirmedTx || confirmedTx.tokenId === null) {
+      throw new AppError(
+        "ASSET_NOT_FOUND",
+        "Asset has not been minted as an NFT",
+        404
+      );
+    }
+
+    const ownerAddress = await this.nftService.getOwnerOf(
+      Number(confirmedTx.tokenId)
+    );
+
+    return {
+      assetId: asset.id,
+      tokenId: Number(confirmedTx.tokenId),
+      ownerAddress,
+    };
   }
 }

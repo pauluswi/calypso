@@ -13,6 +13,7 @@ export class BlockchainService {
   private contractAddress?: string;
   private isMockMode: boolean;
   private mockTokenCounter: number = 100;
+  private static mockOwners: Map<number, string> = new Map();
 
   constructor() {
     const rpcUrl = process.env.BLOCKCHAIN_RPC_URL;
@@ -36,12 +37,15 @@ export class BlockchainService {
   }
 
   async mintNFT(toAddress: string): Promise<MintResult> {
+    const normalizedTo = ethers.getAddress(toAddress);
+
     if (this.isMockMode || !this.wallet || !this.contractAddress) {
       this.mockTokenCounter += 1;
       const tokenId = this.mockTokenCounter;
       const mockTxHash = ethers.keccak256(
-        ethers.toUtf8Bytes(`mint-${toAddress}-${tokenId}-${Date.now()}-${Math.random()}`)
+        ethers.toUtf8Bytes(`mint-${normalizedTo}-${tokenId}-${Date.now()}-${Math.random()}`)
       );
+      BlockchainService.mockOwners.set(tokenId, normalizedTo);
       return {
         txHash: mockTxHash,
         tokenId,
@@ -77,6 +81,8 @@ export class BlockchainService {
         this.mockTokenCounter = tokenId;
       }
 
+      BlockchainService.mockOwners.set(tokenId, normalizedTo);
+
       return {
         txHash: receipt.hash,
         tokenId,
@@ -85,6 +91,38 @@ export class BlockchainService {
       throw new AppError(
         "TRANSACTION_FAILED",
         `Blockchain mint transaction failed: ${
+          error instanceof Error ? error.message : "Unknown blockchain error"
+        }`,
+        500
+      );
+    }
+  }
+
+  async getOwnerOfToken(tokenId: number): Promise<string> {
+    if (this.isMockMode || !this.provider || !this.contractAddress) {
+      const mockOwner = BlockchainService.mockOwners.get(tokenId);
+      if (!mockOwner) {
+        throw new AppError(
+          "BLOCKCHAIN_UNAVAILABLE",
+          `Token ID ${tokenId} owner not found on blockchain`,
+          404
+        );
+      }
+      return mockOwner;
+    }
+
+    try {
+      const contract = new ethers.Contract(
+        this.contractAddress,
+        GAME_ASSET_ABI,
+        this.provider
+      );
+      const owner = await contract.ownerOf(tokenId);
+      return ethers.getAddress(owner);
+    } catch (error) {
+      throw new AppError(
+        "BLOCKCHAIN_UNAVAILABLE",
+        `Failed to query token owner on blockchain: ${
           error instanceof Error ? error.message : "Unknown blockchain error"
         }`,
         500

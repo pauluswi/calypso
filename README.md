@@ -36,7 +36,7 @@ It provides REST APIs for player management, EVM wallet association, game asset 
 | **Phase 4 — Smart Contract** | `GameAsset.sol` (ERC-721), Hardhat compilation, contract unit test suite, deployment script | Completed |
 | **Phase 5 — ethers.js Integration** | `BlockchainService`, `NFTService`, contract ABI integration, NFT minting API (`POST /assets/:id/mint`) | Completed |
 | **Phase 6 — Transaction Tracking** | Transaction persistence, status updates (`PENDING` $\rightarrow$ `CONFIRMED` / `FAILED`), transaction lookup API (`GET /transactions/:id`) | Completed |
-| **Phase 7 — Ownership Lookup** | Player asset list API (`GET /players/:id/assets`), blockchain authoritative ownership API (`GET /assets/:id/owner`) | Pending |
+| **Phase 7 — Ownership Lookup** | Player asset list API (`GET /players/:id/assets`), blockchain authoritative ownership API (`GET /assets/:id/owner`) | Completed |
 | **Phase 8 — Event Listener** | Listen for contract events (`AssetMinted`, `AssetTransferred`) and update database state | Pending |
 | **Phase 9 — Reconciliation** | Ownership reconciliation service (`POST /reconciliation/assets/:id`) comparing DB vs. Blockchain | Pending |
 | **Phase 10 — Testnet Support** | Network switching support between local EVM and EVM testnet (e.g. Polygon Amoy) | Pending |
@@ -70,6 +70,7 @@ calypso/
 │   ├── helpers/                 # Test database utilities
 │   ├── health.test.ts           # Health endpoint unit test
 │   ├── mint.test.ts             # NFT minting integration test
+│   ├── ownership.test.ts        # Ownership lookup integration test
 │   ├── transaction.test.ts      # Transaction lookup integration test
 │   ├── wallet.test.ts           # Wallet integration test
 │   └── player-asset-crud.integration.test.ts # Player & Asset CRUD integration tests
@@ -150,6 +151,7 @@ npm run format:check
 - `GET /players/:id` — Get player details by ID
 - `PUT /players/:id` — Update player username
 - `DELETE /players/:id` — Delete a player
+- `GET /players/:id/assets` — Get player's game assets and associated NFT information
 
 ### Wallet Association
 
@@ -164,6 +166,7 @@ npm run format:check
 - `PUT /assets/:id` — Update asset metadata
 - `DELETE /assets/:id` — Delete an asset
 - `POST /assets/:id/mint` — Mint game asset as an NFT on EVM blockchain to a player's wallet
+- `GET /assets/:id/owner` — Query EVM blockchain for authoritative NFT ownership (`ownerOf`)
 
 ### Transaction Tracking
 
