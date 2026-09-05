@@ -68,4 +68,14 @@ export class TransactionRepository {
       orderBy: { confirmedAt: "desc" },
     });
   }
+
+  async findFirstByTokenId(tokenId: bigint | number): Promise<BlockchainTransaction | null> {
+    return getPrismaClient().blockchainTransaction.findFirst({
+      where: {
+        tokenId: BigInt(tokenId),
+        status: "CONFIRMED",
+      },
+      orderBy: { confirmedAt: "desc" },
+    });
+  }
 }

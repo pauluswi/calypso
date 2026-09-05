@@ -2,6 +2,7 @@ import Fastify, { type FastifyInstance } from "fastify";
 import fastifySwagger from "@fastify/swagger";
 import fastifySwaggerUi from "@fastify/swagger-ui";
 import { disconnectPrisma } from "./config/prisma";
+import { EventListenerService } from "./blockchain/event-listener.service";
 import { registerAssetRoutes } from "./asset/asset.controller";
 import { registerPlayerRoutes } from "./player/player.controller";
 import { registerTransactionRoutes } from "./transaction/transaction.controller";
@@ -54,6 +55,9 @@ export async function buildApp(
   await registerWalletRoutes(app);
   await registerTransactionRoutes(app);
 
+  const eventListener = new EventListenerService();
+  eventListener.startListening();
+
   app.setErrorHandler((error, request, reply) => {
     if (isAppError(error)) {
       return reply.code(error.statusCode).send({
@@ -84,6 +88,7 @@ export async function buildApp(
   });
 
   app.addHook("onClose", async () => {
+    eventListener.stopListening();
     await disconnectPrisma();
   });
 

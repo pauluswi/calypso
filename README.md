@@ -37,7 +37,7 @@ It provides REST APIs for player management, EVM wallet association, game asset 
 | **Phase 5 — ethers.js Integration** | `BlockchainService`, `NFTService`, contract ABI integration, NFT minting API (`POST /assets/:id/mint`) | Completed |
 | **Phase 6 — Transaction Tracking** | Transaction persistence, status updates (`PENDING` $\rightarrow$ `CONFIRMED` / `FAILED`), transaction lookup API (`GET /transactions/:id`) | Completed |
 | **Phase 7 — Ownership Lookup** | Player asset list API (`GET /players/:id/assets`), blockchain authoritative ownership API (`GET /assets/:id/owner`) | Completed |
-| **Phase 8 — Event Listener** | Listen for contract events (`AssetMinted`, `AssetTransferred`) and update database state | Pending |
+| **Phase 8 — Event Listener** | Listen for contract events (`AssetMinted`, `AssetTransferred`) and update database state | Completed |
 | **Phase 9 — Reconciliation** | Ownership reconciliation service (`POST /reconciliation/assets/:id`) comparing DB vs. Blockchain | Pending |
 | **Phase 10 — Testnet Support** | Network switching support between local EVM and EVM testnet (e.g. Polygon Amoy) | Pending |
 
@@ -57,7 +57,7 @@ calypso/
 │   └── deploy.ts                # Hardhat smart contract deployment script
 ├── src/
 │   ├── asset/                   # Asset module (Controller, Service, Repository)
-│   ├── blockchain/              # Blockchain module (BlockchainService, NFTService, contract ABI)
+│   ├── blockchain/              # Blockchain module (BlockchainService, NFTService, EventListenerService, contract ABI)
 │   ├── player/                  # Player module (Controller, Service, Repository)
 │   ├── transaction/             # Blockchain Transaction module (Service, Repository)
 │   ├── wallet/                  # Wallet module (Controller, Service, Repository)
@@ -68,6 +68,7 @@ calypso/
 ├── test/
 │   ├── contracts/               # Hardhat smart contract tests
 │   ├── helpers/                 # Test database utilities
+│   ├── event-listener.test.ts   # Blockchain event listener test
 │   ├── health.test.ts           # Health endpoint unit test
 │   ├── mint.test.ts             # NFT minting integration test
 │   ├── ownership.test.ts        # Ownership lookup integration test

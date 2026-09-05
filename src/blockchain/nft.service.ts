@@ -12,4 +12,12 @@ export class NFTService {
   async getOwnerOf(tokenId: number): Promise<string> {
     return this.blockchainService.getOwnerOfToken(tokenId);
   }
+
+  async transferAsset(
+    fromAddress: string,
+    toAddress: string,
+    tokenId: number
+  ): Promise<{ txHash: string; tokenId: number }> {
+    return this.blockchainService.transferNFT(fromAddress, toAddress, tokenId);
+  }
 }

@@ -15,6 +15,10 @@ export class BlockchainService {
   private mockTokenCounter: number = 100;
   private static mockOwners: Map<number, string> = new Map();
 
+  static setMockOwner(tokenId: number, ownerAddress: string): void {
+    BlockchainService.mockOwners.set(tokenId, ethers.getAddress(ownerAddress));
+  }
+
   constructor() {
     const rpcUrl = process.env.BLOCKCHAIN_RPC_URL;
     const privateKey = process.env.BLOCKCHAIN_PRIVATE_KEY;
@@ -123,6 +127,52 @@ export class BlockchainService {
       throw new AppError(
         "BLOCKCHAIN_UNAVAILABLE",
         `Failed to query token owner on blockchain: ${
+          error instanceof Error ? error.message : "Unknown blockchain error"
+        }`,
+        500
+      );
+    }
+  }
+
+  async transferNFT(
+    fromAddress: string,
+    toAddress: string,
+    tokenId: number
+  ): Promise<{ txHash: string; tokenId: number }> {
+    const normalizedFrom = ethers.getAddress(fromAddress);
+    const normalizedTo = ethers.getAddress(toAddress);
+
+    if (this.isMockMode || !this.wallet || !this.contractAddress) {
+      const mockTxHash = ethers.keccak256(
+        ethers.toUtf8Bytes(
+          `transfer-${normalizedFrom}-${normalizedTo}-${tokenId}-${Date.now()}-${Math.random()}`
+        )
+      );
+      BlockchainService.mockOwners.set(tokenId, normalizedTo);
+      return {
+        txHash: mockTxHash,
+        tokenId,
+      };
+    }
+
+    try {
+      const contract = new ethers.Contract(
+        this.contractAddress,
+        GAME_ASSET_ABI,
+        this.wallet
+      );
+      const tx = await contract.transferAsset(normalizedFrom, normalizedTo, tokenId);
+      const receipt = await tx.wait();
+      BlockchainService.mockOwners.set(tokenId, normalizedTo);
+
+      return {
+        txHash: receipt.hash,
+        tokenId,
+      };
+    } catch (error) {
+      throw new AppError(
+        "TRANSACTION_FAILED",
+        `Blockchain transfer transaction failed: ${
           error instanceof Error ? error.message : "Unknown blockchain error"
         }`,
         500
