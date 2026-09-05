@@ -1,5 +1,14 @@
 # Calypso — Web3 Game Asset Backend
 
+![Node.js](https://img.shields.io/badge/Node.js-24.x-339933?style=flat-square&logo=node.js&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![Fastify](https://img.shields.io/badge/Fastify-5.6-000000?style=flat-square&logo=fastify&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-6.16-2D3748?style=flat-square&logo=prisma&logoColor=white)
+![Solidity](https://img.shields.io/badge/Solidity-0.8.24-363636?style=flat-square&logo=solidity&logoColor=white)
+![ethers.js](https://img.shields.io/badge/ethers.js-6.17-245C6A?style=flat-square)
+![Hardhat](https://img.shields.io/badge/Hardhat-2.22-FFF100?style=flat-square&logo=ethereum&logoColor=black)
+![Vitest](https://img.shields.io/badge/Vitest-3.2-6E9F18?style=flat-square&logo=vitest&logoColor=white)
+
 Calypso is a production-style, modular monolith backend application demonstrating how a Web3 game backend integrates with an EVM-compatible blockchain.
 
 It provides REST APIs for player management, EVM wallet association, game asset management, and an ERC-721 smart contract setup for digital game assets.
