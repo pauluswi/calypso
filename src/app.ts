@@ -4,6 +4,7 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import { disconnectPrisma } from "./config/prisma";
 import { registerAssetRoutes } from "./asset/asset.controller";
 import { registerPlayerRoutes } from "./player/player.controller";
+import { registerTransactionRoutes } from "./transaction/transaction.controller";
 import { registerWalletRoutes } from "./wallet/wallet.controller";
 import { AppError } from "./shared/errors";
 
@@ -51,6 +52,7 @@ export async function buildApp(
   await registerPlayerRoutes(app);
   await registerAssetRoutes(app);
   await registerWalletRoutes(app);
+  await registerTransactionRoutes(app);
 
   app.setErrorHandler((error, request, reply) => {
     if (isAppError(error)) {

@@ -35,6 +35,7 @@ It provides REST APIs for player management, EVM wallet association, game asset 
 | **Phase 3 — Wallet Association** | Player EVM wallet association (`POST /players/:id/wallet`, `GET /players/:id/wallet`), EVM address validation via `ethers.js` | Completed |
 | **Phase 4 — Smart Contract** | `GameAsset.sol` (ERC-721), Hardhat compilation, contract unit test suite, deployment script | Completed |
 | **Phase 5 — ethers.js Integration** | `BlockchainService`, `NFTService`, contract ABI integration, NFT minting API (`POST /assets/:id/mint`) | Completed |
+| **Phase 6 — Transaction Tracking** | Transaction persistence, status updates (`PENDING` $\rightarrow$ `CONFIRMED` / `FAILED`), transaction lookup API (`GET /transactions/:id`) | Completed |
 
 ---
 
@@ -65,6 +66,7 @@ calypso/
 │   ├── helpers/                 # Test database utilities
 │   ├── health.test.ts           # Health endpoint unit test
 │   ├── mint.test.ts             # NFT minting integration test
+│   ├── transaction.test.ts      # Transaction lookup integration test
 │   ├── wallet.test.ts           # Wallet integration test
 │   └── player-asset-crud.integration.test.ts # Player & Asset CRUD integration tests
 ├── .env.example
@@ -158,6 +160,10 @@ npm run format:check
 - `PUT /assets/:id` — Update asset metadata
 - `DELETE /assets/:id` — Delete an asset
 - `POST /assets/:id/mint` — Mint game asset as an NFT on EVM blockchain to a player's wallet
+
+### Transaction Tracking
+
+- `GET /transactions/:id` — Get status and details of a blockchain transaction (`PENDING`, `CONFIRMED`, `FAILED`)
 
 ---
 

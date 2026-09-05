@@ -38,8 +38,18 @@ export class TransactionService {
   async getTransactionById(id: string) {
     const tx = await this.repository.findById(id);
     if (!tx) {
-      throw new AppError("TRANSACTION_FAILED", "Transaction was not found", 404);
+      throw new AppError("TRANSACTION_NOT_FOUND", "Transaction was not found", 404);
     }
-    return tx;
+    return {
+      id: tx.id,
+      assetId: tx.assetId,
+      walletAddress: tx.walletAddress,
+      operation: tx.operation,
+      txHash: tx.txHash,
+      tokenId: tx.tokenId !== null ? Number(tx.tokenId) : null,
+      status: tx.status,
+      createdAt: tx.createdAt,
+      confirmedAt: tx.confirmedAt,
+    };
   }
 }
