@@ -21,6 +21,14 @@ const assetBodySchema = {
   },
 } as const;
 
+const mintBodySchema = {
+  type: "object",
+  properties: {
+    playerId: { type: "string", format: "uuid" },
+    walletAddress: { type: "string" },
+  },
+} as const;
+
 export async function registerAssetRoutes(app: FastifyInstance): Promise<void> {
   const assetService = new AssetService();
 
@@ -103,6 +111,27 @@ export async function registerAssetRoutes(app: FastifyInstance): Promise<void> {
       const params = request.params as { id: string };
       await assetService.deleteAsset(params.id);
       return reply.code(204).send();
+    }
+  );
+
+  app.post(
+    "/assets/:id/mint",
+    {
+      schema: {
+        tags: ["asset"],
+        params: assetIdParamsSchema,
+        body: mintBodySchema,
+      },
+    },
+    async (request, reply) => {
+      const params = request.params as { id: string };
+      const body = (request.body as { playerId?: string; walletAddress?: string }) ?? {};
+      const result = await assetService.mintAsset({
+        assetId: params.id,
+        playerId: body.playerId,
+        walletAddress: body.walletAddress,
+      });
+      return reply.code(200).send(result);
     }
   );
 }

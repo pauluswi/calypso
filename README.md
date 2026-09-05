@@ -34,6 +34,7 @@ It provides REST APIs for player management, EVM wallet association, game asset 
 | **Phase 2 — Database & Domain** | Prisma ORM, data model (`Player`, `Wallet`, `Asset`, `BlockchainTransaction`), Player CRUD, Asset CRUD | Completed |
 | **Phase 3 — Wallet Association** | Player EVM wallet association (`POST /players/:id/wallet`, `GET /players/:id/wallet`), EVM address validation via `ethers.js` | Completed |
 | **Phase 4 — Smart Contract** | `GameAsset.sol` (ERC-721), Hardhat compilation, contract unit test suite, deployment script | Completed |
+| **Phase 5 — ethers.js Integration** | `BlockchainService`, `NFTService`, contract ABI integration, NFT minting API (`POST /assets/:id/mint`) | Completed |
 
 ---
 
@@ -51,7 +52,9 @@ calypso/
 │   └── deploy.ts                # Hardhat smart contract deployment script
 ├── src/
 │   ├── asset/                   # Asset module (Controller, Service, Repository)
+│   ├── blockchain/              # Blockchain module (BlockchainService, NFTService, contract ABI)
 │   ├── player/                  # Player module (Controller, Service, Repository)
+│   ├── transaction/             # Blockchain Transaction module (Service, Repository)
 │   ├── wallet/                  # Wallet module (Controller, Service, Repository)
 │   ├── config/                  # Environment & Prisma client configuration
 │   ├── shared/                  # Centralized app errors & utilities
@@ -61,6 +64,7 @@ calypso/
 │   ├── contracts/               # Hardhat smart contract tests
 │   ├── helpers/                 # Test database utilities
 │   ├── health.test.ts           # Health endpoint unit test
+│   ├── mint.test.ts             # NFT minting integration test
 │   ├── wallet.test.ts           # Wallet integration test
 │   └── player-asset-crud.integration.test.ts # Player & Asset CRUD integration tests
 ├── .env.example
@@ -153,6 +157,7 @@ npm run format:check
 - `GET /assets/:id` — Get asset details by ID
 - `PUT /assets/:id` — Update asset metadata
 - `DELETE /assets/:id` — Delete an asset
+- `POST /assets/:id/mint` — Mint game asset as an NFT on EVM blockchain to a player's wallet
 
 ---
 
