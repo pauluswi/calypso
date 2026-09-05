@@ -36,6 +36,10 @@ It provides REST APIs for player management, EVM wallet association, game asset 
 | **Phase 4 — Smart Contract** | `GameAsset.sol` (ERC-721), Hardhat compilation, contract unit test suite, deployment script | Completed |
 | **Phase 5 — ethers.js Integration** | `BlockchainService`, `NFTService`, contract ABI integration, NFT minting API (`POST /assets/:id/mint`) | Completed |
 | **Phase 6 — Transaction Tracking** | Transaction persistence, status updates (`PENDING` $\rightarrow$ `CONFIRMED` / `FAILED`), transaction lookup API (`GET /transactions/:id`) | Completed |
+| **Phase 7 — Ownership Lookup** | Player asset list API (`GET /players/:id/assets`), blockchain authoritative ownership API (`GET /assets/:id/owner`) | Pending |
+| **Phase 8 — Event Listener** | Listen for contract events (`AssetMinted`, `AssetTransferred`) and update database state | Pending |
+| **Phase 9 — Reconciliation** | Ownership reconciliation service (`POST /reconciliation/assets/:id`) comparing DB vs. Blockchain | Pending |
+| **Phase 10 — Testnet Support** | Network switching support between local EVM and EVM testnet (e.g. Polygon Amoy) | Pending |
 
 ---
 
