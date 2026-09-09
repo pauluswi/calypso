@@ -5,5 +5,6 @@ export default defineConfig({
     environment: "node",
     include: ["test/**/*.test.ts"],
     exclude: ["node_modules/**", "dist/**", "test/contracts/**"],
+    fileParallelism: false,
   },
 });

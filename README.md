@@ -38,7 +38,7 @@ It provides REST APIs for player management, EVM wallet association, game asset 
 | **Phase 6 — Transaction Tracking** | Transaction persistence, status updates (`PENDING` $\rightarrow$ `CONFIRMED` / `FAILED`), transaction lookup API (`GET /transactions/:id`) | Completed |
 | **Phase 7 — Ownership Lookup** | Player asset list API (`GET /players/:id/assets`), blockchain authoritative ownership API (`GET /assets/:id/owner`) | Completed |
 | **Phase 8 — Event Listener** | Listen for contract events (`AssetMinted`, `AssetTransferred`) and update database state | Completed |
-| **Phase 9 — Reconciliation** | Ownership reconciliation service (`POST /reconciliation/assets/:id`) comparing DB vs. Blockchain | Pending |
+| **Phase 9 — Reconciliation** | Ownership reconciliation service (`POST /reconciliation/assets/:id`) comparing DB vs. Blockchain | Completed |
 | **Phase 10 — Testnet Support** | Network switching support between local EVM and EVM testnet (e.g. Polygon Amoy) | Pending |
 
 ---
@@ -59,6 +59,7 @@ calypso/
 │   ├── asset/                   # Asset module (Controller, Service, Repository)
 │   ├── blockchain/              # Blockchain module (BlockchainService, NFTService, EventListenerService, contract ABI)
 │   ├── player/                  # Player module (Controller, Service, Repository)
+│   ├── reconciliation/          # Database vs. blockchain ownership comparison
 │   ├── transaction/             # Blockchain Transaction module (Service, Repository)
 │   ├── wallet/                  # Wallet module (Controller, Service, Repository)
 │   ├── config/                  # Environment & Prisma client configuration
@@ -72,6 +73,7 @@ calypso/
 │   ├── health.test.ts           # Health endpoint unit test
 │   ├── mint.test.ts             # NFT minting integration test
 │   ├── ownership.test.ts        # Ownership lookup integration test
+│   ├── reconciliation.test.ts   # Ownership reconciliation integration test
 │   ├── transaction.test.ts      # Transaction lookup integration test
 │   ├── wallet.test.ts           # Wallet integration test
 │   └── player-asset-crud.integration.test.ts # Player & Asset CRUD integration tests
@@ -172,6 +174,11 @@ npm run format:check
 ### Transaction Tracking
 
 - `GET /transactions/:id` — Get status and details of a blockchain transaction (`PENDING`, `CONFIRMED`, `FAILED`)
+
+### Reconciliation
+
+- `POST /reconciliation/assets/:id` — Compare database ownership with authoritative blockchain ownership
+- Returns `MATCH` or `OWNERSHIP_MISMATCH`
 
 ---
 

@@ -5,6 +5,7 @@ import { disconnectPrisma } from "./config/prisma";
 import { EventListenerService } from "./blockchain/event-listener.service";
 import { registerAssetRoutes } from "./asset/asset.controller";
 import { registerPlayerRoutes } from "./player/player.controller";
+import { registerReconciliationRoutes } from "./reconciliation/reconciliation.controller";
 import { registerTransactionRoutes } from "./transaction/transaction.controller";
 import { registerWalletRoutes } from "./wallet/wallet.controller";
 import { AppError } from "./shared/errors";
@@ -54,6 +55,7 @@ export async function buildApp(
   await registerAssetRoutes(app);
   await registerWalletRoutes(app);
   await registerTransactionRoutes(app);
+  await registerReconciliationRoutes(app);
 
   const eventListener = new EventListenerService();
   eventListener.startListening();
