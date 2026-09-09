@@ -39,7 +39,7 @@ It provides REST APIs for player management, EVM wallet association, game asset 
 | **Phase 7 — Ownership Lookup** | Player asset list API (`GET /players/:id/assets`), blockchain authoritative ownership API (`GET /assets/:id/owner`) | Completed |
 | **Phase 8 — Event Listener** | Listen for contract events (`AssetMinted`, `AssetTransferred`) and update database state | Completed |
 | **Phase 9 — Reconciliation** | Ownership reconciliation service (`POST /reconciliation/assets/:id`) comparing DB vs. Blockchain | Completed |
-| **Phase 10 — Testnet Support** | Network switching support between local EVM and EVM testnet (e.g. Polygon Amoy) | Pending |
+| **Phase 10 — Testnet Support** | Explicit `LOCAL` / `TESTNET` network configuration with safe mock defaults and opt-in real RPC support | Completed |
 
 ---
 
@@ -179,6 +179,17 @@ npm run format:check
 
 - `POST /reconciliation/assets/:id` — Compare database ownership with authoritative blockchain ownership
 - Returns `MATCH` or `OWNERSHIP_MISMATCH`
+
+### Blockchain Network Configuration
+
+The application defaults to mock `LOCAL` mode, so the showcase runs without an EVM node, funds, or external API keys. Real testnet calls are opt-in.
+
+```env
+BLOCKCHAIN_NETWORK=LOCAL
+USE_MOCK_BLOCKCHAIN=true
+```
+
+For a real EVM testnet such as Polygon Amoy, set `BLOCKCHAIN_NETWORK=TESTNET` and provide `BLOCKCHAIN_RPC_URL`, `BLOCKCHAIN_PRIVATE_KEY`, and `NFT_CONTRACT_ADDRESS`. Automated tests never call a real testnet.
 
 ---
 

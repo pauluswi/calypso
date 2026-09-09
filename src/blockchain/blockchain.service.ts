@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 import { AppError } from "../shared/errors";
 import { GAME_ASSET_ABI } from "./contract";
+import { getBlockchainConfig, type BlockchainNetwork } from "./network";
 
 export type MintResult = {
   txHash: string;
@@ -12,6 +13,7 @@ export class BlockchainService {
   private wallet?: ethers.Wallet;
   private contractAddress?: string;
   private isMockMode: boolean;
+  readonly network: BlockchainNetwork;
   private mockTokenCounter: number = 100;
   private static mockOwners: Map<number, string> = new Map();
 
@@ -20,15 +22,12 @@ export class BlockchainService {
   }
 
   constructor() {
-    const rpcUrl = process.env.BLOCKCHAIN_RPC_URL;
-    const privateKey = process.env.BLOCKCHAIN_PRIVATE_KEY;
-    this.contractAddress = process.env.NFT_CONTRACT_ADDRESS;
-
-    this.isMockMode =
-      process.env.USE_MOCK_BLOCKCHAIN === "true" ||
-      !rpcUrl ||
-      !privateKey ||
-      !this.contractAddress;
+    const config = getBlockchainConfig();
+    this.network = config.network;
+    const rpcUrl = config.rpcUrl;
+    const privateKey = config.privateKey;
+    this.contractAddress = config.contractAddress;
+    this.isMockMode = config.useMock;
 
     if (!this.isMockMode && rpcUrl && privateKey) {
       try {
